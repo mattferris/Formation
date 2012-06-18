@@ -25,21 +25,33 @@ class FormField implements iFormField
      */
     protected $validator;
 
+    /**
+     * @var bool
+     */
+    protected $required = false;
+
 
     /**
      * @param string $name
+     * @param bool $required
      * @param iValidator $validator
      * @return void
      */
-    public function __construct ( $name, iValidator $validator = NULL )
+    public function __construct ( $name, $required = false, iValidator $validator = NULL )
     {
         if (empty($name))
         {
             throw new \InvalidArgumentException('$name expects non-empty string');
         }
 
+        if (!is_bool($required))
+        {
+            throw new \InvalidArgumentException('$required expects bool');
+        }
+
         $this->name = $name;
         $this->validator = $validator;
+        $this->required = $required;
     }
 
 
@@ -68,6 +80,15 @@ class FormField implements iFormField
     public function setValue ( $value )
     {
         $this->value = $value;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isRequired ()
+    {
+        return $this->required;
     }
 
 

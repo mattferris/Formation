@@ -11,13 +11,6 @@ namespace ca\bueller\Formation;
 interface iFormField
 {
     /**
-     * @param string $name
-     * @param iValidator $validator
-     * @return void
-     */
-    public function __construct ( $name, iValidator $validator = NULL );
-
-    /**
      * @return string
      */
     public function getName ();
