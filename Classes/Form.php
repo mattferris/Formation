@@ -41,6 +41,12 @@ class Form
         {
             throw new \InvalidArgumentException('$name expects non-empty string');
         }
+        $return = NULL;
+        if (array_key_exists($name, $this->fields))
+        {
+            $return = $this->fields[$name];
+        }
+        return $return;
     }
 
 
@@ -56,10 +62,9 @@ class Form
 
     /**
      * @param FormField $field
-     * @param bool $required
      * @return void
      */
-    public function addField ( FormField $field, $required = false )
+    public function addField ( FormField $field )
     {
         $this->fields[$field->getName()] = $field;
     }
@@ -78,9 +83,14 @@ class Form
             {
                 $value = $this->formData[$name];
             }
-            if ($value !== NULL)
+            $field->setValue($value);
+            if ($value === NULL && $field->isRequired())
             {
-                $field->setValue($value);
+                FormEvents::raise(new RequiredFieldEmpty($field));
+                $valid = false;
+            }
+            elseif ($value !== NULL)
+            {
                 if (empty($value))
                 {
                     if ($field->isRequired())
